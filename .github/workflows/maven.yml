@@ -58,35 +58,12 @@ jobs:
           echo PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
 
-      - name: Upload artifacts
+      - name: List files in build/libs
+        run: ls -la build/libs
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: latest-plugin-jar
-          path: ${{ env.JAR_FILE_NAME }}
-
-      - name: Create release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: ${{ contains( env.PROJECT_VERSION, 'SNAPSHOT' ) }}
-          release_name: ${{ env.PROJECT_VERSION }}-B${{ env.BUILD_NUMBER }}
-          tag_name: ${{ env.PROJECT_VERSION }}-B${{ env.BUILD_NUMBER }}
-          body: |
-            Supported NMS Versions: ${{ env.NMS_VERSIONS }}
-            
-            Download: [MyPet-${{ env.PROJECT_VERSION }}-B${{ env.BUILD_NUMBER }}.jar](https://github.com/MyPetORG/MyPet/releases/download/${{ env.PROJECT_VERSION }}-B${{ env.BUILD_NUMBER }}/MyPet-${{ env.PROJECT_VERSION }}-B${{ env.BUILD_NUMBER }}.jar)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload JAR
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.JAR_FILE_NAME }}
-          asset_name: MyPet-${{ env.PROJECT_VERSION }}-B${{ env.BUILD_NUMBER }}.jar
-          asset_content_type: application/java-archive
-
+          name: build-artifacts
+          path: build/libs/*.jar  # Update this path as needed
      
