@@ -93,7 +93,7 @@ public class CommandRelease implements CommandTabCompleter {
                         Optional<EntityConverterService> converter = MyPetApi.getServiceManager().getService(EntityConverterService.class);
                         try {
                             converter.ifPresent(entityConverterService -> entityConverterService.convertEntity(myPet, normalEntity));
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             normalEntity.remove();
                             return true;
                         }
