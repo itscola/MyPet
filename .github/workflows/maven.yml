@@ -42,6 +42,10 @@ jobs:
         run: |
           echo "BUILD_NUMBER=$(($NUM+1592))" >> $GITHUB_ENV
 
+      - name: Build and Deploy to GitHub Packages
+        run: mvn --batch-mode deploy -DBUILD_NUMBER=${{ env.BUILD_NUMBER }}
+      
+
       - name: Get jar file name
         run: |
           echo "JAR_FILE_NAME=$(find ./target -maxdepth 1 -regex '.*/MyPet-3\.[0-9]+-?S?N?A?P?S?H?O?T?\.jar' | sed -e 's/"//g')" >> $GITHUB_ENV
@@ -64,12 +68,3 @@ jobs:
           name: latest-plugin-jar
           path: ${{ env.JAR_FILE_NAME }}
 
-
-
-      - name: Delete old pre-releases
-        uses: dev-drprasad/delete-older-releases@v0.2.0
-        with:
-          keep_latest: 3
-          delete_tag_pattern: SNAPSHOT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
